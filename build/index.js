@@ -1654,7 +1654,7 @@ var getTarget = function (target, parent) {
   if (parent){
     return parent.querySelector(target);
   }
-  return document.querySelector(target);
+  return (typeof document !== "undefined") && document.querySelector(target);
 };
 
 var getElement = (function (fn) {
@@ -1829,7 +1829,7 @@ function removeStyleElement (style) {
 }
 
 function createStyleElement (options) {
-	var style = document.createElement("style");
+	var style = (typeof document !== "undefined") && document.createElement("style");
 
 	if(options.attrs.type === undefined) {
 		options.attrs.type = "text/css";
@@ -1849,7 +1849,7 @@ function createStyleElement (options) {
 }
 
 function createLinkElement (options) {
-	var link = document.createElement("link");
+	var link = (typeof document !== "undefined") && document.createElement("link");
 
 	if(options.attrs.type === undefined) {
 		options.attrs.type = "text/css";
@@ -1962,7 +1962,7 @@ function applyToSingletonTag (style, index, remove, obj) {
 	if (style.styleSheet) {
 		style.styleSheet.cssText = replaceText(index, css);
 	} else {
-		var cssNode = document.createTextNode(css);
+		var cssNode = (typeof document !== "undefined") && document.createTextNode(css);
 		var childNodes = style.childNodes;
 
 		if (childNodes[index]) style.removeChild(childNodes[index]);
@@ -1975,24 +1975,28 @@ function applyToSingletonTag (style, index, remove, obj) {
 	}
 }
 
-function applyToTag (style, obj) {
-	var css = obj.css;
-	var media = obj.media;
 
-	if(media) {
-		style.setAttribute("media", media)
-	}
+function applyToTag(style, obj) {
+  if (typeof document !== "undefined") {
+    var css = obj.css
+    var media = obj.media
 
-	if(style.styleSheet) {
-		style.styleSheet.cssText = css;
-	} else {
-		while(style.firstChild) {
-			style.removeChild(style.firstChild);
-		}
+    if (media) {
+      style.setAttribute("media", media)
+    }
 
-		style.appendChild(document.createTextNode(css));
-	}
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css
+    } else {
+      while (style.firstChild) {
+        style.removeChild(style.firstChild)
+      }
+
+      style.appendChild(document.createTextNode(css))
+    }
+  }
 }
+
 
 function updateLink (link, options, obj) {
 	var css = obj.css;
