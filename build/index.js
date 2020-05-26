@@ -1646,7 +1646,7 @@ var isOldIE = memoize(function () {
 	// Tests for existence of standard globals is to allow style-loader
 	// to operate correctly into non-standard environments
 	// @see https://github.com/webpack-contrib/style-loader/issues/177
-	if (window) return window && document && document.all && !window.atob;
+	if (typeof window !== "undefined") return window && document && document.all && !window.atob;
 	else return false
 });
 
@@ -1672,7 +1672,7 @@ var getElement = (function (fn) {
                 if (typeof memo[target] === "undefined") {
 			var styleTarget = getTarget.call(this, target, parent);
 			// Special case to return head of iframe instead of iframe itself
-			if (window && window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+			if (typeof window !== "undefined" && window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
 				try {
 					// This will throw an exception if access to iframe is blocked
 					// due to cross-origin restrictions
